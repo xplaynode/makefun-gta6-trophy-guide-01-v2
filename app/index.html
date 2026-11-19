@@ -3,23 +3,76 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>GTA VI trophy checklist</title>
+<title>Sunledger Atlas — GTA VI Trophy Guide &amp; Tracker</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<header>
-  <h1>GTA VI trophy checklist</h1>
-  <p id="progress">0 of 55 earned</p>
+<header class="topbar">
+  <div class="brand">
+    <div class="brand-mark">SL</div>
+    <div>
+      <h1>Sunledger Atlas</h1>
+      <p class="tagline">GTA VI trophy guide &amp; tracker — every guide cited, every risk flagged</p>
+    </div>
+  </div>
+  <div class="progress-box">
+    <div id="progress-line">0/55 earned · 0% · 0 of 1,350 PSN pts</div>
+    <div class="progress-track"><div id="progress-fill"></div></div>
+    <div id="stage-chips" class="stage-chips"></div>
+    <div id="hours-line" class="hours-line"></div>
+  </div>
 </header>
-<div class="controls">
-  <label>Grade <select id="grade"><option value="all">All</option><option value="platinum">Platinum</option><option value="gold">Gold</option><option value="silver">Silver</option><option value="bronze">Bronze</option></select></label>
-  <button id="export" type="button">Export progress</button>
-  <label class="import">Import progress <input id="import" type="file" accept="application/json"></label>
-</div>
-<table>
-  <thead><tr><th>Earned</th><th>Trophy</th><th>Grade</th><th>How to get it</th></tr></thead>
-  <tbody id="rows"></tbody>
-</table>
+
+<div id="audit-strip" class="audit-strip">AUDIT — loading the ledger…</div>
+<div class="alert-banner">MISSABLE RISK — Positive Mental Attitude: do the Chapter 1 balcony meditation at Jason's house, the morning after Down to Earth, before Chapter 1 ends. Sources disagree whether it is required — do it anyway and keep a Chapter 1 manual save.</div>
+
+<nav class="view-tabs" id="view-tabs">
+  <button data-view="tracker" class="active" type="button">Tracker</button>
+  <button data-view="roadmap" type="button">Roadmap</button>
+  <button data-view="missables" type="button">Missables &amp; watch</button>
+  <button data-view="matrix" type="button">Source matrix</button>
+  <button data-view="sources" type="button">Sources</button>
+  <button data-view="export" type="button">Export / Import</button>
+</nav>
+
+<main id="view-tracker" class="view">
+  <div class="layout">
+    <section class="pane list-pane">
+      <div class="controls">
+        <input id="search" type="search" placeholder="Search trophies…" aria-label="Search trophies">
+        <select id="grade-filter" aria-label="Grade filter">
+          <option value="all">All grades</option>
+          <option value="platinum">Platinum</option>
+          <option value="gold">Gold</option>
+          <option value="silver">Silver</option>
+          <option value="bronze">Bronze</option>
+        </select>
+        <select id="sort" aria-label="Sort">
+          <option value="roadmap">Roadmap order</option>
+          <option value="name">Name A–Z</option>
+          <option value="grade">Grade</option>
+          <option value="points">PSN points</option>
+        </select>
+        <label class="shield-toggle"><input id="spoiler-toggle" type="checkbox"> Spoiler shield</label>
+      </div>
+      <div id="filter-chips" class="filter-chips"></div>
+      <div id="next-up" class="next-up"></div>
+      <div id="stage-list"></div>
+    </section>
+    <section class="pane detail-pane" id="detail-pane">
+      <p class="hint">Pick a trophy from the ledger to open its cited guide.</p>
+    </section>
+    <aside class="pane rail-pane" id="sources-rail"></aside>
+  </div>
+</main>
+
+<main id="view-roadmap" class="view" hidden></main>
+<main id="view-missables" class="view" hidden></main>
+<main id="view-matrix" class="view" hidden></main>
+<main id="view-sources" class="view" hidden></main>
+<main id="view-export" class="view" hidden></main>
+
+<footer class="foot">Sunledger Atlas — an original, offline guide. Trophy names and descriptions are PlayStation's; every guide here is our own words and cites its sources by number. No game artwork is used.</footer>
 <script type="module" src="app.js"></script>
 </body>
 </html>
