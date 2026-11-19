@@ -144,7 +144,7 @@ function renderTracker() {
   if (sort === 'name') list = [...list].sort((a, b) => a.name.localeCompare(b.name));
   if (sort === 'grade') list = [...list].sort((a, b) => b.points - a.points);
   if (sort === 'points') list = [...list].sort((a, b) => b.points - a.points);
-  const next = TROPHIES.filter((t) => isTodo(t) && t.stage > 0).slice(0, 3);
+  const next = TROPHIES.filter((t) => isTodo(t) && t.stage > 0).sort((a, b) => a.stage - b.stage || a.id - b.id).slice(0, 3);
   document.getElementById('next-up').innerHTML = '<b>NEXT UP</b> (roadmap order): ' + next.map((t) => shielded(t) ? 'Hidden trophy' : t.name).join(' · ');
   const box = document.getElementById('stage-list');
   if (sort === 'roadmap') {
@@ -293,7 +293,9 @@ function renderExport(msg) {
     <div class="panel"><h3>Saved state</h3>
     <p>Stored in this browser under the localStorage key <b>${KEY}</b>. Per-kind progress:</p>
     <ul>${Object.entries(byKind).map(([k, v]) => `<li>${KIND_LABEL[k] || k}: ${v[0]}/${v[1]} earned</li>`).join('')}</ul>
-    <button type="button" class="action danger" id="reset">Reset all progress</button></div></div></div>`;
+    <button type="button" class="action danger" id="reset">Reset all progress</button></div>
+    ${state.spoilers ? `<div class="panel"><h3>Spoiler shield at work</h3><p>The shield is ON: ${TROPHIES.filter((t) => shielded(t)).length} unearned story trophies currently show in the tracker like this —</p>${TROPHIES.filter((t) => shielded(t)).slice(0, 3).map((t) => `<p><span class="hidden-name">Hidden trophy</span> — stage ${t.stage} · story · ${t.grade} <button type="button" class="reveal-btn" data-shield-reveal="${t.id}">Reveal</button></p>`).join('')}</div>` : ''}
+    </div></div>`;
   document.getElementById('dl').addEventListener('click', () => {
     const a = document.createElement('a');
     a.href = URL.createObjectURL(new Blob([JSON.stringify(exportPayload(), null, 1)], { type: 'application/json' }));
@@ -318,6 +320,7 @@ function renderExport(msg) {
   document.getElementById('set-spoilers').addEventListener('change', (e) => { state.spoilers = e.target.checked; saveState(); syncControls(); renderAll(); });
   document.getElementById('set-unearned').addEventListener('change', (e) => { state.unearnedOnly = e.target.checked; saveState(); renderAll(); });
   document.getElementById('reset').addEventListener('click', () => { state = { earned: new Set(), counts: {}, spoilers: false, unearnedOnly: false }; revealed = new Set(); saveState(); syncControls(); renderAll(); renderExport('All progress reset.'); });
+  document.querySelectorAll('[data-shield-reveal]').forEach((b) => b.addEventListener('click', () => { revealed.add(Number(b.dataset.shieldReveal)); renderAll(); showView('export'); }));
 }
 
 function renderAll() { renderTracker(); renderRoadmap(); renderMissables(); renderMatrix(); renderSources(); renderExport(); }
