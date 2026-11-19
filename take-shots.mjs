@@ -57,9 +57,7 @@ for (const f of ['1-checklist.jpg', '2-silver.jpg', '3-bronze.jpg']) { try { rmS
 
 await goto('/');
 await seed(demo);
-await goto('/#trophy-28');
-await send('Runtime.evaluate', { expression: `document.querySelector('[data-row="28"]')?.scrollIntoView({block:'center'})` });
-await sleep(500);
+await goto('/?fresh=1#trophy-28');
 console.log('cover bytes', await shot('1-cover.jpg', 70));
 
 await goto('/?view=roadmap');

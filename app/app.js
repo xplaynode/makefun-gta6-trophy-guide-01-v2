@@ -144,7 +144,7 @@ function renderTracker() {
   if (sort === 'name') list = [...list].sort((a, b) => a.name.localeCompare(b.name));
   if (sort === 'grade') list = [...list].sort((a, b) => b.points - a.points);
   if (sort === 'points') list = [...list].sort((a, b) => b.points - a.points);
-  const next = TROPHIES.filter(isTodo).slice(0, 3);
+  const next = TROPHIES.filter((t) => isTodo(t) && t.stage > 0).slice(0, 3);
   document.getElementById('next-up').innerHTML = '<b>NEXT UP</b> (roadmap order): ' + next.map((t) => shielded(t) ? 'Hidden trophy' : t.name).join(' · ');
   const box = document.getElementById('stage-list');
   if (sort === 'roadmap') {
@@ -181,7 +181,7 @@ function renderDetail() {
     ${t.count ? counterHtml(t, true) : ''}
     <ol class="steps">${stepsHtml}</ol>
     ${boxes}
-    <p class="msg">Step sources in order: ${srcLine}. Full register in the Sources view; every number in the audit strip is computed from this data.</p>`;
+    <p class="msg">Sources behind each step, in step order: ${srcLine}. The numbered register is in the Sources view; every number in the audit strip is computed from this data.</p>`;
 }
 
 function renderRail() {
@@ -276,6 +276,7 @@ function renderExport(msg) {
   const byKind = {};
   for (const t of TROPHIES) { byKind[t.kind] = byKind[t.kind] || [0, 0]; byKind[t.kind][1]++; if (state.earned.has(t.id)) byKind[t.kind][0]++; }
   document.getElementById('view-export').innerHTML = `
+    <div class="export-grid"><div>
     <div class="panel"><h3>Export / Import — your progress as JSON</h3>
     <pre class="export">${JSON.stringify(exportPayload(), null, 1)}</pre>
     <button type="button" class="action" id="dl">Download .json</button>
@@ -285,14 +286,14 @@ function renderExport(msg) {
     <p>Paste an export below, or choose the file. Import validates the app id and reports exactly what it brought in.</p>
     <textarea id="import-text" placeholder="Paste a Sunledger Atlas export here"></textarea>
     <p><button type="button" class="action" id="imp">Import pasted JSON</button> <label class="action ghost" style="display:inline-block;padding:6px 12px">Import file <input id="imp-file" type="file" accept="application/json" hidden></label></p>
-    <p class="msg" id="imp-msg"></p></div>
-    <div class="panel"><h3>Settings</h3>
+    <p class="msg" id="imp-msg"></p></div></div>
+    <div><div class="panel"><h3>Settings</h3>
     <label><input type="checkbox" id="set-spoilers" ${state.spoilers ? 'checked' : ''}> Spoiler shield — hide story trophies' names and descriptions until earned</label><br>
     <label><input type="checkbox" id="set-unearned" ${state.unearnedOnly ? 'checked' : ''}> Unearned only — filter the tracker to what is left</label></div>
     <div class="panel"><h3>Saved state</h3>
     <p>Stored in this browser under the localStorage key <b>${KEY}</b>. Per-kind progress:</p>
     <ul>${Object.entries(byKind).map(([k, v]) => `<li>${KIND_LABEL[k] || k}: ${v[0]}/${v[1]} earned</li>`).join('')}</ul>
-    <button type="button" class="action danger" id="reset">Reset all progress</button></div>`;
+    <button type="button" class="action danger" id="reset">Reset all progress</button></div></div></div>`;
   document.getElementById('dl').addEventListener('click', () => {
     const a = document.createElement('a');
     a.href = URL.createObjectURL(new Blob([JSON.stringify(exportPayload(), null, 1)], { type: 'application/json' }));
